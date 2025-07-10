@@ -49,7 +49,7 @@ const formSchema = z.object({
   ] as const satisfies readonly EmployeeRole[]),
   joiningDate: z.string().refine(
     (date) => {
-      const selectedDate = new Date(date);
+      const selectedDate = new Date(date + "T00:00:00");
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       return selectedDate <= today;
@@ -174,7 +174,7 @@ const AddEmployee = () => {
                       )}
                     >
                       {field.value ? (
-                        format(new Date(field.value), "PPP")
+                        format(new Date(field.value + "T00:00:00"), "PPP")
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -185,12 +185,23 @@ const AddEmployee = () => {
                 <PopoverContent className="w-auto p-0" align="start">
                   <Calendar
                     mode="single"
-                    selected={field.value ? new Date(field.value) : undefined}
-                    onSelect={(date) =>
-                      field.onChange(
-                        date ? date.toISOString().split("T")[0] : ""
-                      )
+                    selected={
+                      field.value
+                        ? new Date(field.value + "T00:00:00")
+                        : undefined
                     }
+                    onSelect={(date) => {
+                      if (date) {
+                        const year = date.getFullYear();
+                        const month = String(date.getMonth() + 1).padStart(
+                          2,
+                          "0"
+                        );
+                        const day = String(date.getDate()).padStart(2, "0");
+                        const formattedDate = `${year}-${month}-${day}`;
+                        field.onChange(formattedDate);
+                      }
+                    }}
                     disabled={(date) =>
                       date > new Date() || date < new Date("1900-01-01")
                     }
