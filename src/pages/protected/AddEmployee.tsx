@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import emailjs from "@emailjs/browser";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,12 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import {
+  EMAILJS_SERVICE_ID,
+  EMAILJS_TEMPLATE_ID,
+  EMAILJS_PUBLIC_KEY,
+} from "@/config";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -63,6 +70,7 @@ const formSchema = z.object({
 });
 
 const AddEmployee = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const form = useForm<EmployeeFormData>({
     resolver: zodResolver(formSchema),
@@ -75,15 +83,31 @@ const AddEmployee = () => {
     },
   });
 
-  function onSubmit(values: EmployeeFormData) {
+  async function sendEmail(values: EmployeeFormData) {
     try {
-      LocalStorageService.addEmployee(values);
-      form.reset();
-      toast.success("Employee added successfully");
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, values, {
+        publicKey: EMAILJS_PUBLIC_KEY,
+      });
+      toast.success(
+        "Employee added successfully. An email has been sent with the employee details."
+      );
       navigate("/list");
     } catch {
       toast.error("Something went wrong! Please try again.");
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  function onSubmit(values: EmployeeFormData) {
+    try {
+      setIsLoading(true);
+      LocalStorageService.addEmployee(values);
+      form.reset();
+      sendEmail(values);
+    } catch {
+      toast.error("Something went wrong! Please try again.");
+    } 
   }
 
   return (
@@ -219,8 +243,8 @@ const AddEmployee = () => {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Add Employee
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Adding..." : "Add Employee"}
         </Button>
       </form>
     </Form>
