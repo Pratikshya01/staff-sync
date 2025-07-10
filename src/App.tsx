@@ -1,10 +1,18 @@
-import { Button } from "@/components/ui/button";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AddEmployee from "./pages/AddEmployee";
+import EmployeeList from "./pages/EmployeeList";
+import DashboardLayout from "./components/DashboardLayout";
 
 function App() {
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center">
-      <Button>Click me</Button>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<DashboardLayout />}>
+          <Route path="/add" element={<AddEmployee />} />
+          <Route path="/list" element={<EmployeeList />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
