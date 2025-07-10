@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import type { EmployeeFormData, EmployeeRole } from "@/types/employee";
+import { LocalStorageService } from "@/services/localStorage";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { PopoverContent } from "@radix-ui/react-popover";
@@ -72,7 +73,12 @@ const AddEmployee = () => {
   });
 
   function onSubmit(values: EmployeeFormData) {
-    console.log(values);
+    try {
+      LocalStorageService.addEmployee(values);
+      form.reset();
+    } catch (error) {
+      console.error("Error adding employee:", error);
+    }
   }
 
   return (
