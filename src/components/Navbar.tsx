@@ -1,3 +1,4 @@
+import { UserButton } from "@clerk/clerk-react";
 import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
@@ -10,7 +11,7 @@ const Navbar = () => {
   return (
     <header className="bg-black text-white p-4 flex justify-between items-center">
       <h1 className="text-2xl font-bold">StaffSync</h1>
-      <nav className="flex gap-4">
+      <nav className="flex gap-2">
         <Link
           to="/add"
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -21,6 +22,7 @@ const Navbar = () => {
         >
           Add Employee
         </Link>
+
         <Link
           to="/list"
           className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -31,6 +33,8 @@ const Navbar = () => {
         >
           Employee List
         </Link>
+
+        <UserButton />
       </nav>
     </header>
   );
