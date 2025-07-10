@@ -28,6 +28,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -62,6 +63,7 @@ const formSchema = z.object({
 });
 
 const AddEmployee = () => {
+  const navigate = useNavigate();
   const form = useForm<EmployeeFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -78,6 +80,7 @@ const AddEmployee = () => {
       LocalStorageService.addEmployee(values);
       form.reset();
       toast.success("Employee added successfully");
+      navigate("/list");
     } catch {
       toast.error("Something went wrong! Please try again.");
     }
