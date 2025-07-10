@@ -27,6 +27,7 @@ import { PopoverContent } from "@radix-ui/react-popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
   name: z.string().min(3, {
@@ -76,8 +77,9 @@ const AddEmployee = () => {
     try {
       LocalStorageService.addEmployee(values);
       form.reset();
-    } catch (error) {
-      console.error("Error adding employee:", error);
+      toast.success("Employee added successfully");
+    } catch {
+      toast.error("Something went wrong! Please try again.");
     }
   }
 

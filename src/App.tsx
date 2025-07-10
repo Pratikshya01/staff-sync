@@ -7,10 +7,12 @@ import {
 import AddEmployee from "./pages/AddEmployee";
 import EmployeeList from "./pages/EmployeeList";
 import DashboardLayout from "./components/DashboardLayout";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
     <Router>
+      <Toaster position="top-center" reverseOrder={true} />
       <Routes>
         <Route path="/" element={<DashboardLayout />}>
           <Route path="/add" element={<AddEmployee />} />
